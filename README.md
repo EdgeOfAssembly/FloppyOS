@@ -6,6 +6,10 @@
 - FAT12 / FAT16 / FAT32 / exFAT for foreign volumes (planned)
 - Game-oriented defaults, high conventional memory
 
+## Install
+
+`make install` builds the 360K image and copies `build/floppyos.img` to `$(DESTDIR)$(IRON86_SHARE)/disks/floppyos.img`. `IRON86_SHARE` defaults to `/usr/local/share/iron86`. The image is installed beside the default MS-DOS guest; it does not replace it. Smoke uses `IRON86`, which is `/usr/local/bin/iron86` when that file is executable, otherwise `../iron86/iron86`.
+
 ## Try it (preferred: Py86, not QEMU)
 
 ```bash

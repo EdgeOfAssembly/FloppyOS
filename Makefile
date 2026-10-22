@@ -10,12 +10,12 @@ NASMFLAGS += -DDEBUG
 endif
 PYTHON   ?= python3
 
-.PHONY: all boot stage15 kernel programs tools image smoke smoke-py86 smoke-iron86 run-py86 test tests test-mkflopfs clean size help
+.PHONY: all boot stage15 kernel programs tools image install smoke smoke-py86 smoke-iron86 run-py86 test tests test-mkflopfs clean size help
 
 all: image
 
 help:
-	@echo "Targets: image smoke test size clean"
+	@echo "Targets: image install smoke test size clean"
 	@echo "  DEBUG=1  RE kernel: FloppyOS:<INT1A ticks>:OPEN FCB (0F) NAME AL=.."
 	@echo "BUILD_DIR=$(BUILD_DIR)"
 
@@ -89,7 +89,14 @@ $(BUILD_DIR)/floppyos.img: $(BUILD_DIR)/boot.bin $(BUILD_DIR)/stage1_5.bin \
 		-f $(BUILD_DIR)/iflag.com
 	@test $$(wc -c < $@) -eq 368640
 
-IRON86 ?= ../iron86/iron86
+# Installed 360K image. Not the default iron86 guest (that is MS-DOS).
+IRON86_SHARE ?= /usr/local/share/iron86
+
+install: image
+	install -D -m 644 $(BUILD_DIR)/floppyos.img $(DESTDIR)$(IRON86_SHARE)/disks/floppyos.img
+
+# Prefer the installed emulator when it is executable; else the sibling tree.
+IRON86 ?= $(shell if test -x /usr/local/bin/iron86; then printf '%s\n' /usr/local/bin/iron86; else printf '%s\n' ../iron86/iron86; fi)
 
 smoke: smoke-iron86
 
